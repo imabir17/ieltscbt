@@ -1,15 +1,13 @@
 import Link from 'next/link';
-import { getSession } from '@/lib/auth/session';
-import { logout } from '@/app/actions/auth';
-import { LayoutDashboard, Users, FileEdit, Link as LinkIcon, CheckSquare, LogOut, Building } from 'lucide-react';
+import { LayoutDashboard, Users, FileEdit, Link as LinkIcon, CheckSquare, Building } from 'lucide-react';
+import QueueBadge from './QueueBadge';
 
 export default async function CenterLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  const email = session?.email || 'Staff';
+  const email = 'coaching@email.com';
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -30,13 +28,9 @@ export default async function CenterLayout({
             <LayoutDashboard size={20} />
             Overview
           </Link>
-          <Link href="/center/team" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+          <Link href="/center/students" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <Users size={20} />
-            Team Setup
-          </Link>
-          <Link href="/center/tests" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
-            <FileEdit size={20} />
-            Test Creator
+            Students
           </Link>
           <Link href="/center/exams" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <LinkIcon size={20} />
@@ -45,18 +39,9 @@ export default async function CenterLayout({
           <Link href="/center/grading" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <CheckSquare size={20} />
             Evaluator Queue
-            <span className="ml-auto bg-amber-100 text-amber-700 text-xs font-bold px-2 py-0.5 rounded-full">4</span>
+            <QueueBadge />
           </Link>
         </nav>
-        
-        <div className="p-4 border-t border-slate-200">
-          <form action={logout}>
-            <button type="submit" className="flex items-center justify-center gap-2 w-full py-2.5 rounded-lg text-slate-600 border border-slate-200 hover:bg-slate-50 transition-colors font-medium">
-              <LogOut size={18} />
-              Sign Out
-            </button>
-          </form>
-        </div>
       </aside>
 
       {/* Main Content */}

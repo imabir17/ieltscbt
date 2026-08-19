@@ -10,5 +10,15 @@ export default async function NewCenterPage() {
     redirect('/superadmin/plans');
   }
 
-  return <NewCenterForm plans={plans} />;
+  // Convert SQLite row objects to plain JavaScript objects to avoid Next.js serialization error
+  const plainPlans = plans.map(p => ({
+    id: p.id,
+    name: p.name,
+    monthly_exam_quota: p.monthly_exam_quota,
+    price: p.price,
+    overage_fee_per_exam: p.overage_fee_per_exam,
+    features: p.features
+  }));
+
+  return <NewCenterForm plans={plainPlans} />;
 }

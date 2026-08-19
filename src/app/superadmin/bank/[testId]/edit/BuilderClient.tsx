@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Headphones, BookOpen, Edit3, Settings, Plus, Save, Trash2 } from 'lucide-react';
 import AudioUploader from '@/components/builder/AudioUploader';
 import RichTextEditor from '@/components/builder/RichTextEditor';
-import { MultipleChoiceEditor, GapFillEditor, MatchingEditor, ShortAnswerEditor } from '@/components/builder/QuestionEditors';
+import { MultipleChoiceEditor, GapFillEditor, MatchingEditor, ShortAnswerEditor, TableEditor } from '@/components/builder/QuestionEditors';
 import { saveTestModulesAction } from '@/app/actions/superadmin';
 
 export default function BuilderClient({ test }: { test: any }) {
@@ -101,6 +101,8 @@ export default function BuilderClient({ test }: { test: any }) {
         return <MatchingEditor block={block} onChange={onChange} />;
       case 'short_answer':
         return <ShortAnswerEditor block={block} onChange={onChange} />;
+      case 'table':
+        return <TableEditor block={block} onChange={onChange} />;
       default:
         return null;
     }
@@ -152,10 +154,14 @@ export default function BuilderClient({ test }: { test: any }) {
 
             <div className="flex justify-between items-center mt-8 mb-4">
               <h3 className="font-bold text-xl text-slate-900">Listening Questions</h3>
-              <div className="flex gap-2">
-                <button onClick={() => addListeningBlock('multiple_choice')} className="btn-secondary text-xs px-3 py-1">Add MCQ</button>
-                <button onClick={() => addListeningBlock('gap_fill')} className="btn-secondary text-xs px-3 py-1">Add Gap Fill</button>
-                <button onClick={() => addListeningBlock('matching')} className="btn-secondary text-xs px-3 py-1">Add Matching</button>
+              <div className="flex flex-wrap gap-2">
+                <button onClick={() => addListeningBlock('multiple_choice')} className="btn-secondary text-xs px-3 py-1 bg-white">Multiple Choice</button>
+                <button onClick={() => addListeningBlock('matching')} className="btn-secondary text-xs px-3 py-1 bg-white">Matching</button>
+                <button onClick={() => addListeningBlock('gap_fill')} className="btn-secondary text-xs px-3 py-1 bg-white">Form/Note/Summary/Flow-chart</button>
+                <button onClick={() => addListeningBlock('table')} className="btn-secondary text-xs px-3 py-1 bg-white border-primary-300 text-primary-700 font-bold">Table</button>
+                <button onClick={() => addListeningBlock('gap_fill')} className="btn-secondary text-xs px-3 py-1 bg-white">Sentence Completion</button>
+                <button onClick={() => addListeningBlock('short_answer')} className="btn-secondary text-xs px-3 py-1 bg-white">Short Answer</button>
+                <button onClick={() => addListeningBlock('gap_fill')} className="btn-secondary text-xs px-3 py-1 bg-white">Plan/Map/Diagram Labeling</button>
               </div>
             </div>
 
@@ -222,14 +228,17 @@ export default function BuilderClient({ test }: { test: any }) {
                 </div>
 
                 <div className="border-t border-slate-200 pt-6">
-                  <div className="flex justify-between items-center mb-4">
-                    <h4 className="font-bold text-slate-700">Questions for Passage {pIndex + 1}</h4>
-                    <div className="flex gap-2">
-                      <button onClick={() => addReadingBlock(pIndex, 'multiple_choice')} className="btn-secondary text-xs px-2 py-1">MCQ</button>
-                      <button onClick={() => addReadingBlock(pIndex, 'tfng')} className="btn-secondary text-xs px-2 py-1">T/F/NG</button>
-                      <button onClick={() => addReadingBlock(pIndex, 'gap_fill')} className="btn-secondary text-xs px-2 py-1">Gap Fill</button>
-                      <button onClick={() => addReadingBlock(pIndex, 'matching')} className="btn-secondary text-xs px-2 py-1">Matching</button>
-                      <button onClick={() => addReadingBlock(pIndex, 'short_answer')} className="btn-secondary text-xs px-2 py-1">Short Ans</button>
+                  <div className="mb-4">
+                    <h4 className="font-bold text-slate-700 mb-2">Add Questions for Passage {pIndex + 1}</h4>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => addReadingBlock(pIndex, 'multiple_choice')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Multiple Choice</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'tfng')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">True/False/Not Given</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'tfng')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Yes/No/Not Given</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'matching')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Matching (Info/Headings/Features)</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'gap_fill')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Completion (Summary/Flow-chart/Sentence)</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'table')} className="btn-secondary text-xs px-2 py-1 bg-white border-primary-300 text-primary-700 font-bold">Table Completion</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'gap_fill')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Diagram Labeling</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'short_answer')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Short Answer</button>
                     </div>
                   </div>
 

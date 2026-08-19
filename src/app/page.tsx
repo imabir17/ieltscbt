@@ -11,15 +11,18 @@ export default function Home() {
           IELTS MockPrep Platform
         </h1>
         <p className="text-xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed">
-          The most realistic Computer-Based Test environment. Practice like the real thing, get scored by real teachers.
+          Select your role to enter the dashboard. (Login has been bypassed for easy access)
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/signup" className="btn-primary py-3 px-8 text-lg shadow-primary-500/30">
-            Start for Free (Students)
+          <Link href="/student/dashboard" className="btn-primary py-3 px-8 text-lg shadow-primary-500/30">
+            Student Dashboard
           </Link>
-          <Link href="/login" className="btn-secondary py-3 px-8 text-lg">
-            Log in
+          <Link href="/center" className="btn-secondary py-3 px-8 text-lg">
+            Center Admin
+          </Link>
+          <Link href="/superadmin" className="btn-secondary py-3 px-8 text-lg bg-slate-800 text-white hover:bg-slate-700">
+            Superadmin
           </Link>
         </div>
       </div>

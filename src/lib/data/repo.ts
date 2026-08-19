@@ -91,6 +91,7 @@ export interface IRepository {
   // Tests & Question Bank
   getGlobalTests(): Promise<Test[]>;
   getTestById(id: string): Promise<Test | null>;
+  getTestModulesByTestId(testId: string): Promise<TestModule[]>;
   createTest(test: Omit<Test, 'id' | 'created_at'>): Promise<Test>;
   createTestModule(testModule: Omit<TestModule, 'id'>): Promise<TestModule>;
   deleteTestModulesByTestId(testId: string): Promise<void>;

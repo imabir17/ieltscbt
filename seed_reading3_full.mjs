@@ -1,0 +1,177 @@
+import { randomUUID } from 'node:crypto';
+import { DatabaseSync } from 'node:sqlite';
+
+const database = new DatabaseSync('./local.db');
+
+// Delete existing Reading Test 3 and re-seed with correct content
+let testId;
+const stmt = database.prepare('SELECT id FROM tests WHERE name = ?');
+const existingTest = stmt.get('IELTS Reading Test 3');
+
+if (existingTest) {
+  testId = existingTest.id;
+  database.prepare('DELETE FROM test_modules WHERE test_id = ?').run(testId);
+  console.log('Deleted old modules for Reading Test 3, re-seeding...');
+} else {
+  testId = randomUUID();
+  database.prepare('INSERT INTO tests (id, name, type, owner_center_id) VALUES (?, ?, ?, ?)').run(testId, 'IELTS Reading Test 3', 'Academic', null);
+}
+
+const config = JSON.stringify({ timeLimit: 60, instructions: 'Read the passages and answer the questions.' });
+
+const passage1 = `William Henry Perkin was born on March 12, 1838, in London, England. As a boy, Perkin's curiosity prompted early interests in the arts, sciences, photography, and engineering. But it was a chance stumbling upon a run-down, yet functional, laboratory in his late grandfather's home that solidified the young man's enthusiasm for chemistry.
+
+As a student at the City of London School, Perkin became immersed in the study of chemistry. His talent and devotion to the subject were perceived by his teacher, Thomas Hall, who encouraged him to attend a series of lectures given by the eminent scientist Michael Faraday at the Royal Institution. Those speeches fired the young chemist's enthusiasm further, and he later went on to attend the Royal College of Chemistry, which he succeeded in entering in 1853, at the age of 15.
+
+At the time of Perkin's enrolment, the Royal College of Chemistry was headed by the noted German chemist August Wilhelm Hofmann. Perkin's scientific gifts soon caught Hofmann's attention and, within two years, he became Hofmann's youngest assistant. Not long after that, Perkin made the scientific breakthrough that would bring him both fame and fortune.
+
+At the time, quinine was the only viable medical treatment for malaria. The drug is derived from the bark of the cinchona tree, native to South America, and by 1856 demand for the drug was surpassing the available supply. Thus, when Hofmann made some passing comments about the desirability of a synthetic substitute for quinine, it was unsurprising that his star pupil was moved to take up the challenge.
+
+During his vacation in 1856, Perkin spent his time in the laboratory on the top floor of his family's house. He was attempting to manufacture quinine from aniline, an inexpensive and readily available coal tar waste product. Despite his best efforts, however, he did not end up with quinine. Instead, he produced a mysterious dark sludge. Luckily, Perkin's scientific training and nature prompted him to investigate the substance further. Incorporating potassium dichromate and alcohol into the aniline at various stages of the experimental process, he finally produced a deep purple solution. And, proving the truth of the famous scientist Louis Pasteur's words 'chance favours only the prepared mind', Perkin saw the potential of his unexpected find.
+
+Historically, textile dyes were made from such natural sources as plants and animal excretions. Some of these, such as the glandular mucus of snails, were difficult to obtain and outrageously expensive. Indeed, the purple colour extracted from a snail was once so costly that in society at the time only the rich could afford it. Further, natural dyes tended to be muddy in hue and fade quickly. It was against this backdrop that Perkin's discovery was made.
+
+Perkin quickly grasped that his purple solution could be used to colour fabric, thus making it the world's first synthetic dye. Realising the importance of this breakthrough, he lost no time in patenting it. But perhaps the most fascinating of all Perkin's reactions to his find was his nearly instant recognition that the new dye had commercial possibilities.
+
+Perkin originally named his dye Tyrian Purple, but it later became commonly known as mauve (from the French for the plant used to make the colour violet). He asked advice of Scottish dye works owner Robert Pullar, who assured him that manufacturing the dye would be well worth it if the colour remained fast (i.e. would not fade) and the cost was relatively low. So, over the fierce objections of his mentor Hofmann, he left college to give birth to the modern chemical industry.
+
+With the help of his father and brother, Perkin set up a factory not far from London. Utilising the cheap and plentiful coal tar that was an almost unlimited byproduct of London's gas street lighting, the dye works began producing the world's first synthetically dyed material in 1857. The company received a commercial boost from the Empress Eugenie of France, when she decided the new colour flattered her. Very soon, mauve was the necessary shade for all the fashionable ladies in that country.
+
+Not to be outdone, England's Queen Victoria also appeared in public wearing a mauve gown, thus making it all the rage in England as well. The dye was bold and fast, and the public clamoured for more. Perkin went back to the drawing board.
+
+Although Perkin's fame was achieved and fortune assured by his first discovery, the chemist continued his research. Among other dyes he developed and introduced were aniline red (1859) and aniline black (1863) and, in the late 1860s, Perkin's green. It is important to note that Perkin's synthetic dye discoveries had outcomes far beyond the merely decorative. The dyes also became vital to medical research in many ways. For instance, they were used to stain previously invisible microbes and bacteria, allowing researchers to identify such bacilli as tuberculosis, cholera, and anthrax. Artificial dyes continue to play a crucial role today. And, in what would have been particularly pleasing to Perkin, their current use is in the search for a vaccine against malaria.`;
+
+const passage2 = `A The primary reason for the search is basic curiosity – the same curiosity about the natural world that drives all pure science. We want to know whether we are alone in the Universe. We want to know whether life evolves naturally if given the right conditions, or whether there is something very special about the Earth to have fostered the variety of life forms that we see around us on the planet. The simple detection of a radio signal will be sufficient to answer this most basic of all questions. In this sense, SETI is another cog in the machinery of pure science which is continually pushing out the horizon of our knowledge. However, there are other reasons for being interested in whether life exists elsewhere. For example, we have had civilisation on Earth for perhaps only a few thousand years, and the threats of nuclear war and pollution over the last few decades have told us that our survival may be tenuous. Will we last another two thousand years or will we wipe ourselves out? Since the lifetime of a planet like ours is several billion years, we can expect that, if other civilisations do survive in our galaxy, their ages will range from zero to several billion years. Thus any other civilisation that we hear from is likely to be far older, on average, than ourselves. The mere existence of such a civilisation will tell us that long-term survival is possible, and gives us some cause for optimism. It is even possible that the older civilisation may pass on the benefits of their experience in dealing with threats to survival such as nuclear war and global pollution, and other threats that we haven't yet discovered.
+
+B In discussing whether we are alone, most SETI scientists adopt two ground rules. First, UFOs (Unidentified Flying Objects) are generally ignored since most scientists don't consider the evidence for them to be strong enough to bear serious consideration (although it is also important to keep an open mind in case any really convincing evidence emerges in the future). Second, we make a very conservative assumption that we are looking for a life form that is pretty well like us, since if it differs radically from us we may well not recognise it as a life form, quite apart from whether we are able to communicate with it. In other words, the life form we are looking for may well have two green heads and seven fingers, but it will nevertheless resemble us in that it should communicate with its fellows, be interested in the Universe, live on a planet orbiting a star like our Sun, and perhaps most restrictively, have a chemistry, like us, based on carbon and water.
+
+C Even when we make these assumptions, our understanding of other life forms is still severely limited. We do not even know, for example, how many stars have planets, and we certainly do not know how likely it is that life will arise naturally, given the right conditions. However, when we look at the 100 billion stars in our galaxy (the Milky Way), and 100 billion galaxies in the observable Universe, it seems inconceivable that at least one of these planets does not have a life form on it; in fact, the best educated guess we can make, using the little that we do know about the conditions for carbon-based life, leads us to estimate that perhaps one in 100,000 stars might have a life-bearing planet orbiting it. That means that our nearest neighbours are perhaps 100 light years away, which is almost next door in astronomical terms.
+
+D An alien civilisation could choose many different ways of sending information across the galaxy, but many of these either require too much energy, or else are severely attenuated while traversing the vast distances across the galaxy. It turns out that, for a given amount of transmitted power, radio waves in the frequency range 1000 to 3000 MHz travel the greatest distance, and so all searches to date have concentrated on looking for radio waves in this frequency range. So far there have been a number of searches by various groups around the world, including Australian searches using the radio telescope at Parkes, New South Wales. Until now there have not been any detections from the few hundred stars which have been searched. The scale of the searches has been increased dramatically since 1992, when the US Congress voted NASA $10 million per year for ten years to conduct a thorough search for extra-terrestrial life. Much of the money in this project is being spent on developing the special hardware needed to search many frequencies at once. The project has two parts. One part is a targeted search using the world's largest radio telescopes, the American-operated telescope in Arecibo, Puerto Rico and the French telescope in Nancy in France. This part of the project is searching the nearest 1000 likely stars with high sensitivity for signals in the frequency range 1000 to 3000 MHz. The other part of the project is an undirected search which is monitoring all of space with a lower sensitivity, using the smaller antennas of NASA's Deep Space Network.
+
+E There is considerable debate over how we should react if we detect a signal from an alien civilisation. Everybody agrees that we should not reply immediately. Quite apart from the impracticality of sending a reply over such large distances at short notice, it raises a host of ethical questions that would have to be addressed by the global community before any reply could be sent. Would the human race face the culture shock if faced with a superior and much older civilisation? Luckily, there is no urgency about this. The stars being searched are hundreds of light years away, so it takes hundreds of years for their signal to reach us, and a further few hundred years for our reply to reach them. It's not important, then, if there's a delay of a few years, or decades, while the human race debates the question of whether to reply, and perhaps carefully drafts a reply.`;
+
+const passage3 = `If you go back far enough, everything lived in the sea. At various points in evolutionary history, enterprising individuals within many different animal groups moved out onto the land, sometimes even to the most parched deserts, taking their own private seawater with them in blood and cellular fluids. In addition to the reptiles, birds, mammals and insects which we see all around us, other groups that have succeeded out of water include scorpions, snails, crustaceans such as woodlice and land crabs, millipedes and centipedes, spiders and various worms. And we mustn't forget the plants, without whose prior invasion of the land none of the other migrations could have happened.
+
+Moving from water to land involved a major redesign of every aspect of life, including breathing and reproduction. Nevertheless, a good number of thoroughgoing land animals later turned around, abandoned their hard-earned terrestrial re-tooling, and returned to the water again. Seals have only gone part way back. They show us what the intermediates might have been like, on the way to extreme cases such as whales and dugongs. Whales (including the small whales we call dolphins) and dugongs, with their close cousins the manatees, ceased to be land creatures altogether and reverted to the full marine habits of their remote ancestors. They don't even come ashore to breed. They do, however, still breathe air, having never developed anything equivalent to the gills of their earlier marine incarnation. Turtles went back to the sea a very long time ago and, like all vertebrate returnees to the water, they breathe air. However, they are, in one respect, less fully given back to the water than whales or dugongs, for turtles still lay their eggs on beaches.
+
+There is evidence that all modern turtles are descended from a terrestrial ancestor which lived before most of the dinosaurs. There are two key fossils called Proganochelys quenstedti and Palaeochersis talampayensis dating from early dinosaur times, which appear to be close to the ancestry of all modern turtles and tortoises. You might wonder how we can tell whether fossil animals lived on land or in water, especially if only fragments are found. Sometimes it's obvious. Ichthyosaurs were reptilian contemporaries of the dinosaurs, with fins and streamlined bodies. The fossils look like dolphins and they surely lived like dolphins, in the water. With turtles it is a little less obvious. One way to tell is by measuring the bones of their forelimbs.
+
+Walter Joyce and Jacques Gauthier, at Yale University, obtained three measurements in these particular bones of 71 species of living turtles and tortoises. They used a kind of triangular graph paper to plot the three measurements against one another. All the land tortoise species formed a tight cluster of points in the upper part of the triangle; all the water turtles cluster in the lower part of the triangular graph. There was no overlap, except when they added some species that spend time both in water and on land. Sure enough, these amphibious species show up on the triangular graph approximately half way between the 'wet cluster' of sea turtles and the 'dry cluster' of land tortoises. The next step was to determine where the fossils fell. The bones of P. quenstedti and P. talampayensis leave us in no doubt. Their points on the graph are right in the thick of the dry cluster. Both these fossils were dry-land tortoises. They come from the era before our turtles returned to the water.
+
+You might think, therefore, that modern land tortoises have probably stayed on land ever since those early terrestrial times, as most mammals did after a few of them went back to the sea. But apparently not. If you draw out the family tree of all modern turtles and tortoises, nearly all the branches are aquatic. Today's land tortoises constitute a single branch, deeply nested among branches consisting of aquatic turtles. This suggests that modern land tortoises have not stayed on land continuously since the time of P. quenstedti and P. talampayensis. Rather, their ancestors were among those who went back to the water, and they then re-emerged back onto the land in (relatively) more recent times.
+
+Tortoises therefore represent a remarkable double return. In common with all mammals, reptiles and birds, their remote ancestors were marine fish and before that various more or less worm-like creatures stretching back, still in the sea, to the primeval bacteria. Later ancestors lived on land and stayed there for a very large number of generations. Later ancestors still evolved back into the water and became sea turtles. And finally they returned yet again to the land as tortoises, some of which now live in the driest of deserts.`;
+
+const questions = JSON.stringify([
+  {
+    title: 'Reading Passage 1',
+    passage: passage1,
+    groups: [
+      {
+        instructions: `Do the following statements agree with the information given in Reading Passage 1?\nWrite TRUE, FALSE, or NOT GIVEN.`,
+        questions: [
+          { id: 1, type: 'true_false_not_given', text: '1. Michael Faraday was the first person to recognize Perkin\'s ability as a student of chemistry.', answer: 'FALSE' },
+          { id: 2, type: 'true_false_not_given', text: '2. Michael Faraday suggested Perkin should enroll in the Royal College of Chemistry.', answer: 'NOT GIVEN' },
+          { id: 3, type: 'true_false_not_given', text: '3. Perkin employed August Wilhelm Hofmann as his assistant.', answer: 'FALSE' },
+          { id: 4, type: 'true_false_not_given', text: '4. Perkin was still young when he made the discovery that made him rich and famous.', answer: 'TRUE' },
+          { id: 5, type: 'true_false_not_given', text: '5. The trees from which quinine is derived grow only in South America.', answer: 'NOT GIVEN' },
+          { id: 6, type: 'true_false_not_given', text: '6. Perkin hoped to manufacture a drug from a coal tar waste product.', answer: 'TRUE' },
+          { id: 7, type: 'true_false_not_given', text: '7. Perkin was inspired by the discoveries of the famous scientist Louis Pasteur.', answer: 'NOT GIVEN' },
+        ]
+      },
+      {
+        instructions: `Answer the questions below. Choose NO MORE THAN TWO WORDS from the passage for each answer.`,
+        questions: [
+          { id: 8,  type: 'fill_in_the_blank', text: '8.  Before Perkin\'s discovery, with what group in society was the colour purple associated?', answer: 'rich' },
+          { id: 9,  type: 'fill_in_the_blank', text: '9.  What potential did Perkin immediately understand that his new dye had?', answer: 'commercial' },
+          { id: 10, type: 'fill_in_the_blank', text: '10. What was the name finally used to refer to the first colour Perkin invented?', answer: 'mauve' },
+          { id: 11, type: 'fill_in_the_blank', text: '11. What was the name of the person Perkin consulted before setting up his own dye works?', answer: 'Robert Pullar' },
+          { id: 12, type: 'fill_in_the_blank', text: '12. In what country did Perkin\'s newly invented colour first become fashionable?', answer: 'France' },
+          { id: 13, type: 'fill_in_the_blank', text: '13. According to the passage, which disease is now being targeted by researchers using synthetic dyes?', answer: 'malaria' },
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Reading Passage 2',
+    passage: passage2,
+    groups: [
+      {
+        instructions: `Reading Passage 2 has five paragraphs, A-E. Choose the correct heading for paragraphs B-E from the list below.\n\nList of Headings:\ni. Seeking the transmission of radio signals from planets\nii. Appropriate responses to signals from other civilizations\niii. Vast distances to Earth's closest neighbors\niv. Assumptions underlying the search for extra-terrestrial intelligence\nv. Reasons for the search for extra-terrestrial intelligence (Example: Paragraph A = v)\nvi. Knowledge of extra-terrestrial life forms\nvii. Likelihood of life on other planets`,
+        questions: [
+          { id: 14, type: 'matching_paragraphs', text: '14. Paragraph B', answer: 'iv' },
+          { id: 15, type: 'matching_paragraphs', text: '15. Paragraph C', answer: 'vii' },
+          { id: 16, type: 'matching_paragraphs', text: '16. Paragraph D', answer: 'i' },
+          { id: 17, type: 'matching_paragraphs', text: '17. Paragraph E', answer: 'ii' },
+        ]
+      },
+      {
+        instructions: `Answer the questions below. Choose NO MORE THAN TWO WORDS from the passage for each answer.`,
+        questions: [
+          { id: 18, type: 'fill_in_the_blank', text: '18. What is the life expectancy of Earth?', answer: 'several billion years' },
+          { id: 19, type: 'fill_in_the_blank', text: '19. What kind of signals from other intelligent civilizations are SETI scientists searching for?', answer: 'radio (waves)' },
+          { id: 20, type: 'fill_in_the_blank', text: '20. How many stars are the world\'s most powerful radio telescopes searching?', answer: '1000 (stars)' },
+        ]
+      },
+      {
+        instructions: `Do the following statements agree with the views of the writer in Reading Passage 2? Write TRUE, FALSE, or NOT GIVEN.`,
+        questions: [
+          { id: 21, type: 'true_false_not_given', text: '21. Alien civilizations may be able to help the human race to overcome serious problems.', answer: 'TRUE' },
+          { id: 22, type: 'true_false_not_given', text: '22. SETI scientists are trying to find a life form that resembles humans in many ways.', answer: 'TRUE' },
+          { id: 23, type: 'true_false_not_given', text: '23. The Americans and Australians have co-operated on joint research projects.', answer: 'NOT GIVEN' },
+          { id: 24, type: 'true_false_not_given', text: '24. So far SETI scientists have picked up radio signals from several stars.', answer: 'FALSE' },
+          { id: 25, type: 'true_false_not_given', text: '25. The NASA project attracted criticism from some members of Congress.', answer: 'NOT GIVEN' },
+          { id: 26, type: 'true_false_not_given', text: '26. If a signal from outer space is received, it will be important to respond promptly.', answer: 'FALSE' },
+        ]
+      }
+    ]
+  },
+  {
+    title: 'Reading Passage 3',
+    passage: passage3,
+    groups: [
+      {
+        instructions: `Answer the questions below. Choose NO MORE THAN TWO WORDS from the passage for each answer.`,
+        questions: [
+          { id: 27, type: 'fill_in_the_blank', text: '27. What had to transfer from sea to land before any animals could migrate?', answer: 'plants' },
+          { id: 28, type: 'fill_in_the_blank', text: '28. Which TWO processes are mentioned as those in which animals had to make big changes as they moved onto land?', answer: 'breathing and reproduction' },
+          { id: 29, type: 'fill_in_the_blank', text: '29. Which physical feature, possessed by their ancestors, do whales lack?', answer: 'gills' },
+          { id: 30, type: 'fill_in_the_blank', text: '30. Which animals might ichthyosaurs have resembled?', answer: 'dolphins' },
+        ]
+      },
+      {
+        instructions: `Do the following statements agree with the information given in Reading Passage 3? Write TRUE, FALSE, or NOT GIVEN.`,
+        questions: [
+          { id: 31, type: 'true_false_not_given', text: '31. Turtles were among the first group of animals to migrate back to the sea.', answer: 'NOT GIVEN' },
+          { id: 32, type: 'true_false_not_given', text: '32. It is always difficult to determine where an animal lived when its fossilized remains are incomplete.', answer: 'FALSE' },
+          { id: 33, type: 'true_false_not_given', text: '33. The habitat of ichthyosaurs can be determined by the appearance of their fossilized remains.', answer: 'TRUE' },
+        ]
+      },
+      {
+        instructions: `Complete the flow-chart below. Choose NO MORE THAN TWO WORDS AND/OR A NUMBER from the passage.\n\nMethod of determining where the ancestors of turtles and tortoises come from:\nStep 1: 71 species of living turtles and tortoises were examined.\nStep 2: Data recorded on a graph to compare information.\nStep 3: Same data collected from some living species and added.\nStep 4: Bones of P. quenstedti and P. talampayensis examined similarly.`,
+        questions: [
+          { id: 34, type: 'fill_in_the_blank', text: '34. A total of ___ were taken from the bones of their forelimbs.', answer: '3 measurements' },
+          { id: 35, type: 'fill_in_the_blank', text: '35. The data was recorded on a ___ (necessary for comparing the information).', answer: 'triangular graph' },
+          { id: 36, type: 'fill_in_the_blank', text: '36. Land tortoises were represented by a dense ___ of points towards the top.', answer: 'cluster' },
+          { id: 37, type: 'fill_in_the_blank', text: '37. The same data was collected from some living ___ species and added.', answer: 'amphibious' },
+          { id: 38, type: 'fill_in_the_blank', text: '38. The points for these species turned out to be positioned about ___ up the triangle.', answer: 'half way' },
+          { id: 39, type: 'fill_in_the_blank', text: '39. The position of the points indicated that both ancient creatures were ___.', answer: 'dry land tortoises' },
+        ]
+      },
+      {
+        instructions: `Choose the correct letter A, B, C or D.\nAccording to the writer, the most significant thing about tortoises is that`,
+        questions: [
+          { id: 40, type: 'multiple_choice', text: '40. According to the writer, the most significant thing about tortoises is that', options: ['A they are able to adapt to life in extremely dry environments.', 'B their original life form was a kind of primeval bacteria.', 'C they have so much in common with sea turtles.', 'D they have made the transition from sea to land more than once.'], answer: 'D' },
+        ]
+      }
+    ]
+  }
+]);
+
+const moduleId = randomUUID();
+database.prepare('INSERT INTO test_modules (id, test_id, module_type, config, questions) VALUES (?, ?, ?, ?, ?)').run(moduleId, testId, 'reading', config, questions);
+
+console.log('IELTS Reading Test 3 re-seeded successfully with correct content!');
+console.log('Test ID:', testId);
+database.close();

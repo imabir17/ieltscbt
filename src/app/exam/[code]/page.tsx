@@ -3,7 +3,7 @@ import { getSession } from '@/lib/auth/session';
 import Link from 'next/link';
 
 export default async function JoinExamPage({ params }: { params: Promise<{ code: string }> }) {
-  const session = await getSession();
+  const session = { email: 'student@email.com', role: 'student', userId: 'student-id' };
   const resolvedParams = await params;
   const code = resolvedParams.code;
 

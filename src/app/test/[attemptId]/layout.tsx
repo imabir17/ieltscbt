@@ -3,6 +3,7 @@
 import { useTestStore } from '@/lib/store/testStore';
 import { Clock, Flag, LayoutGrid, ChevronRight, ChevronLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { getCenterBranding } from '@/app/actions/branding';
 
 export default function TestLayout({
   children,
@@ -13,9 +14,11 @@ export default function TestLayout({
 }) {
   const { timeLeft, setTimeLeft, currentSection } = useTestStore();
   const [isClient, setIsClient] = useState(false);
+  const [branding, setBranding] = useState({ centerName: 'Loading...', logoUrl: null });
 
   useEffect(() => {
     setIsClient(true);
+    getCenterBranding().then((res: any) => setBranding(res));
     // Simple timer interval
     const timer = setInterval(() => {
       setTimeLeft(useTestStore.getState().timeLeft - 1);
@@ -39,7 +42,10 @@ export default function TestLayout({
       {/* Top Header (CBT style) */}
       <header className="bg-slate-900 text-white h-14 flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-4">
-          <div className="font-bold text-lg">IELTS MockPrep</div>
+          <div className="flex items-center gap-2">
+            {branding.logoUrl && <img src={branding.logoUrl} alt={branding.centerName} className="h-6 object-contain" />}
+            <div className="font-bold text-lg">{branding.centerName}</div>
+          </div>
           <div className="h-6 w-px bg-slate-700"></div>
           <div className="text-slate-300 font-medium capitalize">{currentSection} Module</div>
         </div>
@@ -89,10 +95,18 @@ export default function TestLayout({
             <Flag size={18} />
             Flag for Review
           </button>
-          <button className="flex items-center gap-2 px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-bold shadow-sm">
-            Next
-            <ChevronRight size={20} />
-          </button>
+          
+          <form action={async () => {
+            const { submitTestAttempt } = await import('@/app/actions/student');
+            const { attemptId } = await params;
+            await submitTestAttempt(attemptId);
+            window.location.href = '/student/dashboard';
+          }}>
+            <button type="submit" className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-sm">
+              Submit Test
+              <ChevronRight size={20} />
+            </button>
+          </form>
         </div>
       </footer>
     </div>

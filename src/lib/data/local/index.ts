@@ -177,14 +177,26 @@ export class LocalRepository implements IRepository {
   }
 
   // Tests & Question Bank
-  async getGlobalTests(): Promise<Test[]> {
-    const stmt = db.prepare('SELECT * FROM tests WHERE owner_center_id IS NULL ORDER BY created_at DESC');
-    return stmt.all() as Test[];
+  async getGlobalTests(): Promise<(Test & { module_type: string | null })[]> {
+    const stmt = db.prepare(`
+      SELECT t.*, tm.module_type
+      FROM tests t
+      LEFT JOIN test_modules tm ON tm.test_id = t.id
+      WHERE t.owner_center_id IS NULL
+      ORDER BY tm.module_type ASC, t.created_at DESC
+    `);
+    return (stmt.all() as any[]).map(t => ({ ...t }));
   }
 
   async getTestById(id: string): Promise<Test | null> {
     const stmt = db.prepare('SELECT * FROM tests WHERE id = ?');
-    return (stmt.get(id) as Test) || null;
+    const row = stmt.get(id) as any;
+    return row ? { ...row } : null;
+  }
+
+  async getTestModulesByTestId(testId: string): Promise<TestModule[]> {
+    const stmt = db.prepare('SELECT * FROM test_modules WHERE test_id = ?');
+    return (stmt.all(testId) as any[]).map(r => ({ ...r }));
   }
 
   async createTest(test: Omit<Test, 'id' | 'created_at'>): Promise<Test> {
@@ -209,6 +221,13 @@ export class LocalRepository implements IRepository {
 
   async deleteTestModulesByTestId(testId: string): Promise<void> {
     db.prepare('DELETE FROM test_modules WHERE test_id = ?').run(testId);
+  }
+
+  async deleteTest(testId: string): Promise<void> {
+    db.transaction(() => {
+      db.prepare('DELETE FROM test_modules WHERE test_id = ?').run(testId);
+      db.prepare('DELETE FROM tests WHERE id = ?').run(testId);
+    })();
   }
 
   // Scoring

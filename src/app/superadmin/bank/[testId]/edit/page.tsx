@@ -18,7 +18,7 @@ export default async function TestBuilderPage({ params }: { params: Promise<{ te
       </div>
       
       <div className="flex-1 bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm flex flex-col">
-        <BuilderClient test={test} />
+        <BuilderClient test={{ ...test }} />
       </div>
     </div>
   );

@@ -46,6 +46,19 @@ export default function NewCenterForm({ plans }: { plans: { id: string, name: st
           </div>
 
           <div>
+            <label className="block text-sm font-bold text-slate-900 mb-1" htmlFor="logoUrl">
+              Logo URL (Optional)
+            </label>
+            <input 
+              id="logoUrl" 
+              name="logoUrl" 
+              type="url" 
+              className="input-field" 
+              placeholder="https://example.com/logo.png"
+            />
+          </div>
+
+          <div>
             <label className="block text-sm font-bold text-slate-900 mb-1" htmlFor="planId">
               Select Subscription Plan
             </label>

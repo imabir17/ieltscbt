@@ -1,15 +1,12 @@
 import Link from 'next/link';
-import { getSession } from '@/lib/auth/session';
-import { logout } from '@/app/actions/auth';
-import { Building2, CreditCard, Library, PenTool, LogOut, Settings } from 'lucide-react';
+import { Building2, CreditCard, Library, PenTool, Settings } from 'lucide-react';
 
 export default async function SuperadminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getSession();
-  const email = session?.email || 'Superadmin';
+  const email = 'admin@platform.com';
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -33,10 +30,6 @@ export default async function SuperadminLayout({
             <Library size={20} />
             Global Bank
           </Link>
-          <Link href="/superadmin/scoring" className="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-slate-800 hover:text-white transition-colors">
-            <PenTool size={20} />
-            Scoring Queue
-          </Link>
         </nav>
         
         <div className="p-4 border-t border-slate-800">
@@ -48,12 +41,7 @@ export default async function SuperadminLayout({
               <p className="text-sm font-medium text-white truncate">{email}</p>
             </div>
           </div>
-          <form action={logout} className="mt-2">
-            <button type="submit" className="flex items-center gap-3 px-3 py-2 w-full rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
-              <LogOut size={20} />
-              <span className="text-sm">Sign Out</span>
-            </button>
-          </form>
+
         </div>
       </aside>
 
