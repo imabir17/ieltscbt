@@ -42,6 +42,9 @@ export async function addStudentAction(prevState: any, formData: FormData) {
     revalidatePath('/center/students');
     return { success: true };
   } catch (error: any) {
+    if (error.message.includes('UNIQUE constraint failed: users.email')) {
+      return { error: 'An account with this email address already exists. Please use a different email.' };
+    }
     return { error: error.message };
   }
 }
