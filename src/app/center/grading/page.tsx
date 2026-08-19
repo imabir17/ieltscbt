@@ -4,7 +4,8 @@ import { CheckSquare, Clock, User, ChevronRight, CheckCircle2 } from 'lucide-rea
 import QueueBadge from '../QueueBadge';
 
 export default async function GradingQueuePage() {
-  const centerId = 'mock-center-id';
+  const centerRow = db.prepare('SELECT id FROM centers ORDER BY created_at DESC LIMIT 1').get() as any;
+  const centerId = centerRow?.id || 'mock-center-id';
 
   // Fetch attempts that are submitted or graded for students of this center
   let queue: any[] = [];

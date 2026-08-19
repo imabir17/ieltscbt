@@ -1,7 +1,8 @@
 import { db } from '@/lib/data/local/db';
 
 export default async function QueueBadge() {
-  const centerId = 'mock-center-id';
+  const centerRow = db.prepare('SELECT id FROM centers ORDER BY created_at DESC LIMIT 1').get() as any;
+  const centerId = centerRow?.id || 'mock-center-id';
   
   // Try counting from attempts if the table structure is complete
   try {

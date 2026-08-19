@@ -3,7 +3,8 @@ import Link from 'next/link';
 import { db } from '@/lib/data/local/db';
 
 export default async function CenterOverviewPage() {
-  const centerId = 'mock-center-id';
+  const centerRow = db.prepare('SELECT id FROM centers ORDER BY created_at DESC LIMIT 1').get() as any;
+  const centerId = centerRow?.id || 'mock-center-id';
 
   try {
     db.exec(`

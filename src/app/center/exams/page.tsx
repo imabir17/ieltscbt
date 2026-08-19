@@ -3,7 +3,8 @@ import { Link as LinkIcon, Users, FileEdit } from 'lucide-react';
 import AssignExamForm from './AssignExamForm';
 
 export default async function HostExamsPage() {
-  const centerId = 'mock-center-id';
+  const centerRow = db.prepare('SELECT id FROM centers ORDER BY created_at DESC LIMIT 1').get() as any;
+  const centerId = centerRow?.id || 'mock-center-id';
 
   try {
     db.exec(`

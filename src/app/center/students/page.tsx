@@ -3,7 +3,8 @@ import { Users, Plus, Mail, Phone } from 'lucide-react';
 import AddStudentForm from './AddStudentForm';
 
 export default async function CenterStudentsPage() {
-  const centerId = 'mock-center-id';
+  const centerRow = db.prepare('SELECT id FROM centers ORDER BY created_at DESC LIMIT 1').get() as any;
+  const centerId = centerRow?.id || 'mock-center-id';
   
   // Make sure table exists
   try {
