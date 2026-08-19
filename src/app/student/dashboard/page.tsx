@@ -101,7 +101,7 @@ export default async function StudentDashboardPage() {
                   </div>
                   <div className="text-right">
                     {a.status === 'graded' ? (
-                      <Link href="#" className="btn-secondary text-sm py-1.5 px-4">View Report</Link>
+                      <Link href={`/student/results/${a.id}`} className="btn-secondary text-sm py-1.5 px-4">View Report</Link>
                     ) : (
                       <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-amber-50 text-amber-700">
                         Needs Grading
