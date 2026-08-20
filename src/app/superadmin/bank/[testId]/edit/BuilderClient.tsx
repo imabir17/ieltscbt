@@ -11,16 +11,33 @@ export default function BuilderClient({ test }: { test: any }) {
   const [activeTab, setActiveTab] = useState<'listening' | 'reading' | 'writing'>('listening');
   const [isSaving, setIsSaving] = useState(false);
 
+  // Parse existing modules if any
+  const listeningModule = test.modules?.find((m: any) => m.module_type === 'listening');
+  const readingModule = test.modules?.find((m: any) => m.module_type === 'reading');
+  const writingModule = test.modules?.find((m: any) => m.module_type === 'writing');
+
+  const lConfig = listeningModule ? JSON.parse(listeningModule.config) : {};
+  const lQuestions = listeningModule ? JSON.parse(listeningModule.questions) : [];
+
+  const rQuestions = readingModule ? JSON.parse(readingModule.questions) : [];
+
+  const wConfig = writingModule ? JSON.parse(writingModule.config) : {};
+  const wQuestions = writingModule ? JSON.parse(writingModule.questions) : {};
+
   // --- Listening State ---
-  const [listeningAudio, setListeningAudio] = useState('');
-  const [listeningBlocks, setListeningBlocks] = useState<any[]>([]);
+  const [listeningAudio, setListeningAudio] = useState(lConfig.audioUrl || '');
+  const [listeningBlocks, setListeningBlocks] = useState<any[]>(lQuestions || []);
 
   // --- Reading State ---
-  const [readingPassages, setReadingPassages] = useState<any[]>([]);
+  const [readingPassages, setReadingPassages] = useState<any[]>(rQuestions || []);
 
   // --- Writing State ---
-  const [writingTask1, setWritingTask1] = useState({ type: 'Line Graph', prompt: '', imageUrl: '' });
-  const [writingTask2, setWritingTask2] = useState({ prompt: '' });
+  const [writingTask1, setWritingTask1] = useState({ 
+    type: wConfig.task1Type || 'Line Graph', 
+    prompt: wQuestions.task1Prompt || wQuestions.task1 || '', 
+    imageUrl: wConfig.task1Image || '' 
+  });
+  const [writingTask2, setWritingTask2] = useState({ prompt: wQuestions.task2Prompt || wQuestions.task2 || '' });
 
   // --- Helpers ---
   const addListeningBlock = (type: string) => {
