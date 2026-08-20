@@ -3,6 +3,20 @@
 import { useState } from 'react';
 import { Plus, Trash2, CheckCircle2 } from 'lucide-react';
 
+export function InstructionEditor({ block, onChange }: { block: any, onChange: (b: any) => void }) {
+  return (
+    <div className="p-4 border border-blue-100 bg-blue-50 rounded-lg mb-6">
+      <label className="block text-xs font-bold text-slate-700 mb-2">Block Instructions</label>
+      <textarea 
+        className="input-field min-h-[80px] text-sm"
+        value={block.instruction || ''}
+        onChange={e => onChange({ ...block, instruction: e.target.value })}
+        placeholder="Enter instructions for this question block (e.g. Choose NO MORE THAN TWO WORDS)..."
+      />
+    </div>
+  );
+}
+
 export function MultipleChoiceEditor({ block, onChange }: { block: any, onChange: (b: any) => void }) {
   const updateQuestion = (qIndex: number, field: string, value: any) => {
     const newQs = [...block.questions];
@@ -42,15 +56,7 @@ export function MultipleChoiceEditor({ block, onChange }: { block: any, onChange
 
   return (
     <div className="space-y-6">
-      <div className="p-4 border border-blue-100 bg-blue-50 rounded-lg">
-        <label className="block text-xs font-bold text-slate-700 mb-2">Block Instructions (e.g. Choose the correct letter, A, B, C or D)</label>
-        <textarea 
-          className="input-field min-h-[80px] text-sm"
-          value={block.instruction || ''}
-          onChange={e => onChange({ ...block, instruction: e.target.value })}
-          placeholder="Enter instructions for this question block..."
-        />
-      </div>
+      <InstructionEditor block={block} onChange={onChange} />
 
       {block.questions.map((q: any, qIndex: number) => (
         <div key={q.id} className="p-4 border border-slate-200 rounded-lg bg-white space-y-4">
@@ -121,6 +127,8 @@ export function GapFillEditor({ block, onChange }: { block: any, onChange: (b: a
 
   return (
     <div className="space-y-4">
+      <InstructionEditor block={block} onChange={onChange} />
+      
       <div>
         <div className="flex items-center justify-between mb-2">
           <label className="block text-xs font-bold text-slate-500">Text with Blanks</label>
@@ -161,6 +169,8 @@ export function MatchingEditor({ block, onChange }: { block: any, onChange: (b: 
 
   return (
     <div className="space-y-6">
+      <InstructionEditor block={block} onChange={onChange} />
+      
       <div className="p-4 border border-amber-200 bg-amber-50 rounded-lg">
         <div className="flex items-center justify-between mb-3">
           <h4 className="font-bold text-amber-900 text-sm">Options Pool (e.g. Headings/Paragraphs)</h4>
@@ -230,6 +240,8 @@ export function ShortAnswerEditor({ block, onChange }: { block: any, onChange: (
 
   return (
     <div className="space-y-4">
+      <InstructionEditor block={block} onChange={onChange} />
+      
       {(block.questions || []).map((q: any, qIndex: number) => (
         <div key={q.id} className="p-4 border border-slate-200 rounded-lg bg-white space-y-3">
           <label className="block text-xs font-bold text-slate-500">Question {qIndex + 1}</label>
@@ -333,6 +345,8 @@ export function TableEditor({ block, onChange }: { block: any, onChange: (b: any
 
   return (
     <div className="space-y-4">
+      <InstructionEditor block={block} onChange={onChange} />
+      
       <div className="flex gap-2 mb-2">
         <button type="button" onClick={addRow} className="btn-secondary text-xs px-2 py-1">Add Row</button>
         <button type="button" onClick={addCol} className="btn-secondary text-xs px-2 py-1">Add Column</button>
