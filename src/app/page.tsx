@@ -15,11 +15,14 @@ export default function Home() {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/student/dashboard" className="btn-primary py-3 px-8 text-lg shadow-primary-500/30">
-            Student Dashboard
-          </Link>
-          <Link href="/center" className="btn-secondary py-3 px-8 text-lg">
+          <Link href="/center" className="btn-primary py-3 px-8 text-lg font-bold">
             Center Admin
+          </Link>
+          <Link href="/teacher/dashboard" className="btn-primary py-3 px-8 text-lg font-bold shadow-primary-500/30">
+            Teacher Portal
+          </Link>
+          <Link href="/student/dashboard" className="btn-secondary py-3 px-8 text-lg font-bold">
+            Student Portal
           </Link>
           <Link href="/superadmin" className="btn-secondary py-3 px-8 text-lg bg-slate-800 text-white hover:bg-slate-700">
             Superadmin

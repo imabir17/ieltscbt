@@ -24,7 +24,7 @@ export default async function CenterLayout({
         </div>
         
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          <Link href="/center" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-primary-700 bg-primary-50 font-medium">
+          <Link href="/center" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <LayoutDashboard size={20} />
             Overview
           </Link>
@@ -35,6 +35,10 @@ export default async function CenterLayout({
           <Link href="/center/exams" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <LinkIcon size={20} />
             Host Exams
+          </Link>
+          <Link href="/center/teachers" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+            <Users size={20} />
+            Teachers
           </Link>
           <Link href="/center/grading" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
             <CheckSquare size={20} />

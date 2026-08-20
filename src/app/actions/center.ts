@@ -76,3 +76,41 @@ export async function assignExamAction(prevState: any, formData: FormData) {
     return { error: error.message };
   }
 }
+export async function addTeacherAction(prevState: any, formData: FormData) {
+  try {
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string || '123456';
+    const centerId = formData.get('centerId') as string;
+
+    const id = randomUUID();
+    db.prepare(`
+      INSERT INTO users (id, email, password_hash, account_type, name)
+      VALUES (?, ?, ?, 'teacher', ?)
+    `).run(id, email, password, name);
+
+    try {
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS center_teachers (
+          center_id TEXT NOT NULL,
+          teacher_id TEXT NOT NULL,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          PRIMARY KEY (center_id, teacher_id)
+        )
+      `).run();
+    } catch(e) {}
+
+    db.prepare(`
+      INSERT INTO center_teachers (center_id, teacher_id)
+      VALUES (?, ?)
+    `).run(centerId || 'mock-center-id', id);
+
+    revalidatePath('/center/teachers');
+    return { success: true };
+  } catch (error: any) {
+    if (error.message.includes('UNIQUE constraint failed: users.email')) {
+      return { error: 'An account with this email address already exists.' };
+    }
+    return { error: error.message };
+  }
+}
