@@ -15,7 +15,7 @@ export default async function TeacherLayout({
       FROM users u
       JOIN center_teachers ct ON u.id = ct.teacher_id
       JOIN centers c ON ct.center_id = c.id
-      WHERE u.account_type = 'teacher'
+      WHERE u.account_type = 'center_staff'
       ORDER BY u.created_at DESC LIMIT 1
     `).get() as any;
   } catch(e) {}

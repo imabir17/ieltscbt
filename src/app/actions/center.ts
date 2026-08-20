@@ -86,7 +86,7 @@ export async function addTeacherAction(prevState: any, formData: FormData) {
     const id = randomUUID();
     db.prepare(`
       INSERT INTO users (id, email, password_hash, account_type, name)
-      VALUES (?, ?, ?, 'teacher', ?)
+      VALUES (?, ?, ?, 'center_staff', ?)
     `).run(id, email, password, name);
 
     try {
