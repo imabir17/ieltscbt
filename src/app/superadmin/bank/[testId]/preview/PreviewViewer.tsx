@@ -65,10 +65,69 @@ export default function PreviewViewer({ test, modules }: { test: any, modules: a
     }
   };
 
-  let sections = [];
+  let sections: any[] = [];
   try {
-    sections = JSON.parse(activeModule?.questions || '[]');
-  } catch (e) {}
+    const parsed = JSON.parse(activeModule?.questions || '[]');
+    const mapType = (t: string) => {
+      if (t === 'tfng') return 'true_false_not_given';
+      if (t === 'ynng') return 'yes_no_not_given';
+      if (t === 'matching') return 'matching_paragraphs';
+      if (t === 'gap_fill' || t === 'short_answer') return 'fill_in_the_blank';
+      if (t === 'table') return 'form_completion';
+      return t;
+    };
+
+    const mapBlock = (b: any) => {
+      const g = {
+        ...b,
+        instructions: b.instruction || b.instructions || '',
+        table: b.tableData ? { headers: b.tableData.headers, rows: b.tableData.cells } : b.table,
+        questions: (b.questions || []).map((q: any) => ({
+          ...q,
+          type: q.type || mapType(b.type)
+        }))
+      };
+      
+      // If gap fill / short answer has no explicit questions but has textWithBlanks / answers
+      if ((b.type === 'gap_fill' || b.type === 'short_answer' || b.type === 'table') && g.questions.length === 0) {
+        if (b.answers) {
+           Object.keys(b.answers).forEach((k, i) => {
+             g.questions.push({ id: k.replace('blank_', ''), type: mapType(b.type), text: '', answer: b.answers[k][0] || '' });
+           });
+        }
+      }
+      return g;
+    };
+
+    if (activeModule?.module_type === 'reading') {
+      sections = parsed.map((p: any) => ({
+        title: p.title || 'Reading Passage',
+        passage: p.content || p.passage || '',
+        groups: (p.blocks || p.groups || []).map(mapBlock)
+      }));
+    } else if (activeModule?.module_type === 'listening') {
+      if (Array.isArray(parsed) && parsed.length > 0 && parsed[0].type) {
+        sections = [{
+          title: 'Part 1',
+          groups: parsed.map(mapBlock)
+        }];
+      } else if (Array.isArray(parsed)) {
+        sections = parsed.map((p: any) => ({
+          ...p,
+          groups: (p.groups || []).map(mapBlock)
+        }));
+      }
+    } else if (activeModule?.module_type === 'writing') {
+      let wConfig: any = {};
+      try { wConfig = JSON.parse(activeModule?.config || '{}'); } catch(e){}
+      sections = [
+        { title: 'Task 1', prompt: parsed.task1Prompt || parsed.task1 || '', image: wConfig.task1Image || '' },
+        { title: 'Task 2', prompt: parsed.task2Prompt || parsed.task2 || '' }
+      ];
+    }
+  } catch (e) {
+    console.error(e);
+  }
 
   const activeSection = sections[activeSectionIndex];
   const groups = activeSection?.groups || [];

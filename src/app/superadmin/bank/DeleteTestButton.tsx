@@ -11,7 +11,7 @@ export function DeleteTestButton({ testId, testName }: { testId: string; testNam
   };
 
   return (
-    <form action={deleteGlobalTestAction} onSubmit={handleSubmit}>
+    <form action={async (formData) => { await deleteGlobalTestAction(null, formData); }} onSubmit={handleSubmit}>
       <input type="hidden" name="testId" value={testId} />
       <button
         type="submit"
