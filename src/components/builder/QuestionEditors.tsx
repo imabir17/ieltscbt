@@ -25,6 +25,16 @@ export function MultipleChoiceEditor({ block, onChange }: { block: any, onChange
 
   return (
     <div className="space-y-6">
+      <div className="p-4 border border-blue-100 bg-blue-50 rounded-lg">
+        <label className="block text-xs font-bold text-slate-700 mb-2">Block Instructions (e.g. Choose the correct letter, A, B, C or D)</label>
+        <textarea 
+          className="input-field min-h-[80px] text-sm"
+          value={block.instruction || ''}
+          onChange={e => onChange({ ...block, instruction: e.target.value })}
+          placeholder="Enter instructions for this question block..."
+        />
+      </div>
+
       {block.questions.map((q: any, qIndex: number) => (
         <div key={q.id} className="p-4 border border-slate-200 rounded-lg bg-white space-y-4">
           <div>

@@ -24,7 +24,13 @@ export default function BuilderClient({ test }: { test: any }) {
 
   // --- Helpers ---
   const addListeningBlock = (type: string) => {
-    setListeningBlocks([...listeningBlocks, { id: `block-${Date.now()}`, type, questions: [] }]);
+    let instruction = '';
+    if (type === 'tfng') {
+      instruction = "TRUE if the statement agrees with the information\nFALSE if the statement contradicts the information\nNOT GIVEN if there is no information on this";
+    } else if (type === 'ynng') {
+      instruction = "YES if the statement agrees with the claims of the writer\nNO if the statement contradicts the claims of the writer\nNOT GIVEN if it is impossible to say what the writer thinks about this";
+    }
+    setListeningBlocks([...listeningBlocks, { id: `block-${Date.now()}`, type, instruction, questions: [] }]);
   };
 
   const updateListeningBlock = (index: number, updated: any) => {
@@ -44,8 +50,14 @@ export default function BuilderClient({ test }: { test: any }) {
   };
 
   const addReadingBlock = (pIndex: number, type: string) => {
+    let instruction = '';
+    if (type === 'tfng') {
+      instruction = "TRUE if the statement agrees with the information\nFALSE if the statement contradicts the information\nNOT GIVEN if there is no information on this";
+    } else if (type === 'ynng') {
+      instruction = "YES if the statement agrees with the claims of the writer\nNO if the statement contradicts the claims of the writer\nNOT GIVEN if it is impossible to say what the writer thinks about this";
+    }
     const newP = [...readingPassages];
-    newP[pIndex].blocks.push({ id: `block-${Date.now()}`, type, questions: [] });
+    newP[pIndex].blocks.push({ id: `block-${Date.now()}`, type, instruction, questions: [] });
     setReadingPassages(newP);
   };
 
@@ -94,6 +106,7 @@ export default function BuilderClient({ test }: { test: any }) {
     switch (block.type) {
       case 'multiple_choice':
       case 'tfng':
+      case 'ynng':
         return <MultipleChoiceEditor block={block} onChange={onChange} />;
       case 'gap_fill':
         return <GapFillEditor block={block} onChange={onChange} />;
@@ -233,7 +246,7 @@ export default function BuilderClient({ test }: { test: any }) {
                     <div className="flex flex-wrap gap-2">
                       <button onClick={() => addReadingBlock(pIndex, 'multiple_choice')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Multiple Choice</button>
                       <button onClick={() => addReadingBlock(pIndex, 'tfng')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">True/False/Not Given</button>
-                      <button onClick={() => addReadingBlock(pIndex, 'tfng')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Yes/No/Not Given</button>
+                      <button onClick={() => addReadingBlock(pIndex, 'ynng')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Yes/No/Not Given</button>
                       <button onClick={() => addReadingBlock(pIndex, 'matching')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Matching (Info/Headings/Features)</button>
                       <button onClick={() => addReadingBlock(pIndex, 'gap_fill')} className="btn-secondary text-xs px-2 py-1 bg-white border-slate-300">Completion (Summary/Flow-chart/Sentence)</button>
                       <button onClick={() => addReadingBlock(pIndex, 'table')} className="btn-secondary text-xs px-2 py-1 bg-white border-primary-300 text-primary-700 font-bold">Table Completion</button>
