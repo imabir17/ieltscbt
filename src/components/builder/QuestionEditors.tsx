@@ -164,7 +164,7 @@ export function GapFillEditor({ block, onChange }: { block: any, onChange: (b: a
 
 export function MatchingEditor({ block, onChange }: { block: any, onChange: (b: any) => void }) {
   // Matching requires Premises (the questions) and Options (the pool of answers)
-  const addPremise = () => onChange({ ...block, premises: [...(block.premises || []), { id: `p-${Date.now()}`, text: '', correctAnswer: '' }] });
+  const addPremise = () => onChange({ ...block, premises: [...(block.premises || []), { id: `p-${Date.now()}`, text: '', label: '', correctAnswer: '' }] });
   const addOption = () => onChange({ ...block, options: [...(block.options || []), `Option ${block.options?.length + 1 || 1}`] });
 
   return (
@@ -203,8 +203,19 @@ export function MatchingEditor({ block, onChange }: { block: any, onChange: (b: 
           </button>
         </div>
         {(block.premises || []).map((p: any, i: number) => (
-          <div key={p.id} className="flex items-center gap-3">
-            <span className="font-bold text-slate-400 text-sm">{i + 1}.</span>
+          <div key={p.id} className="flex items-center gap-2">
+            <input
+              type="text"
+              className="w-16 input-field text-sm text-center font-bold text-slate-600 bg-slate-50"
+              placeholder={String(i + 1)}
+              value={p.label || ''}
+              onChange={e => {
+                const newP = [...block.premises];
+                newP[i].label = e.target.value;
+                onChange({ ...block, premises: newP });
+              }}
+              title="Question Number / Label"
+            />
             <input 
               type="text" 
               className="flex-1 input-field text-sm" 
