@@ -96,17 +96,25 @@ export default function TestLayout({
             Flag for Review
           </button>
           
-          <form action={async () => {
-            const { submitTestAttempt } = await import('@/app/actions/student');
-            const { attemptId } = await params;
-            await submitTestAttempt(attemptId);
-            window.location.href = '/student/dashboard';
-          }}>
-            <button type="submit" className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-sm">
-              Submit Test
-              <ChevronRight size={20} />
-            </button>
-          </form>
+          <button 
+            onClick={async () => {
+              if (currentSection === 'listening') {
+                useTestStore.getState().setSection('reading');
+              } else if (currentSection === 'reading') {
+                useTestStore.getState().setSection('writing');
+              } else {
+                // Submit the test attempt
+                const { submitTestAttempt } = await import('@/app/actions/student');
+                const { attemptId } = await params;
+                await submitTestAttempt(attemptId);
+                window.location.href = '/student/dashboard';
+              }
+            }}
+            className="flex items-center gap-2 px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-sm"
+          >
+            {currentSection === 'writing' ? 'Submit Test' : 'Next Section'}
+            <ChevronRight size={20} />
+          </button>
         </div>
       </footer>
     </div>
