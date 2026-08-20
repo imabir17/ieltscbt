@@ -25,12 +25,27 @@ export default function BuilderClient({ test }: { test: any }) {
   // --- Helpers ---
   const addListeningBlock = (type: string) => {
     let instruction = '';
+    let initialOptions = ['A', 'B', 'C', 'D'];
+
     if (type === 'tfng') {
       instruction = "TRUE if the statement agrees with the information\nFALSE if the statement contradicts the information\nNOT GIVEN if there is no information on this";
+      initialOptions = ['TRUE', 'FALSE', 'NOT GIVEN'];
     } else if (type === 'ynng') {
       instruction = "YES if the statement agrees with the claims of the writer\nNO if the statement contradicts the claims of the writer\nNOT GIVEN if it is impossible to say what the writer thinks about this";
+      initialOptions = ['YES', 'NO', 'NOT GIVEN'];
     }
-    setListeningBlocks([...listeningBlocks, { id: `block-${Date.now()}`, type, instruction, questions: [] }]);
+    
+    setListeningBlocks([...listeningBlocks, { 
+      id: `block-${Date.now()}`, 
+      type, 
+      instruction, 
+      questions: [{
+        id: `q-${Date.now()}`,
+        text: '',
+        options: initialOptions,
+        correctAnswer: initialOptions[0]
+      }] 
+    }]);
   };
 
   const updateListeningBlock = (index: number, updated: any) => {
@@ -51,13 +66,28 @@ export default function BuilderClient({ test }: { test: any }) {
 
   const addReadingBlock = (pIndex: number, type: string) => {
     let instruction = '';
+    let initialOptions = ['A', 'B', 'C', 'D'];
+    
     if (type === 'tfng') {
       instruction = "TRUE if the statement agrees with the information\nFALSE if the statement contradicts the information\nNOT GIVEN if there is no information on this";
+      initialOptions = ['TRUE', 'FALSE', 'NOT GIVEN'];
     } else if (type === 'ynng') {
       instruction = "YES if the statement agrees with the claims of the writer\nNO if the statement contradicts the claims of the writer\nNOT GIVEN if it is impossible to say what the writer thinks about this";
+      initialOptions = ['YES', 'NO', 'NOT GIVEN'];
     }
+
     const newP = [...readingPassages];
-    newP[pIndex].blocks.push({ id: `block-${Date.now()}`, type, instruction, questions: [] });
+    newP[pIndex].blocks.push({ 
+      id: `block-${Date.now()}`, 
+      type, 
+      instruction, 
+      questions: [{
+        id: `q-${Date.now()}`,
+        text: '',
+        options: initialOptions,
+        correctAnswer: initialOptions[0]
+      }] 
+    });
     setReadingPassages(newP);
   };
 

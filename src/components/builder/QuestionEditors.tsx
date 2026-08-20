@@ -23,6 +23,23 @@ export function MultipleChoiceEditor({ block, onChange }: { block: any, onChange
     onChange({ ...block, questions: newQs });
   };
 
+  const getDefaultOptions = () => {
+    if (block.type === 'tfng') return ['TRUE', 'FALSE', 'NOT GIVEN'];
+    if (block.type === 'ynng') return ['YES', 'NO', 'NOT GIVEN'];
+    return ['A', 'B', 'C', 'D'];
+  };
+
+  const addAnotherQuestion = () => {
+    const defaultOptions = getDefaultOptions();
+    onChange({ 
+      ...block, 
+      questions: [
+        ...block.questions, 
+        { id: `q-${Date.now()}`, text: '', options: defaultOptions, correctAnswer: defaultOptions[0] }
+      ] 
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="p-4 border border-blue-100 bg-blue-50 rounded-lg">
@@ -75,7 +92,7 @@ export function MultipleChoiceEditor({ block, onChange }: { block: any, onChange
       ))}
       <button 
         type="button" 
-        onClick={() => onChange({ ...block, questions: [...block.questions, { id: `q-${Date.now()}`, text: '', options: ['A', 'B', 'C'], correctAnswer: 'A' }] })}
+        onClick={addAnotherQuestion}
         className="btn-secondary text-sm flex items-center gap-2"
       >
         <Plus size={16} /> Add Another Question
